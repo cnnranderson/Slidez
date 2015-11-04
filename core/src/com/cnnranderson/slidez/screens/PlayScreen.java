@@ -60,6 +60,23 @@ public class PlayScreen implements Screen {
         initNavigationButtons();
         initInfoLabel();
         initGrid();
+        shuffle();
+    }
+
+    private void shuffle(){
+        int swaps = 0; // debug variable
+        int shuffles;
+        // 99 is arbitrary
+        for(shuffles = 0; shuffles < 99; shuffles++){
+            // Choose a random spot in the grid and check if a valid move can be made
+            int posX = MathUtils.random(0, boardSize - 1);
+            int posY = MathUtils.random(0, boardSize - 1);
+            if (holeX == posX || holeY == posX) {
+                moveButtons(posX,posY);
+                swaps++;
+            }
+        }
+        System.out.println("Tried: " + shuffles + ", actual moves made: " + swaps); // Debug logging
     }
 
     private void update(float delta) {
@@ -130,15 +147,14 @@ public class PlayScreen implements Screen {
         Array<Integer> nums = new Array<Integer>();
         buttonGrid = new SlideButton[boardSize][boardSize];
 
-        // Init and randomize grid numbers
+        // Initialize the grid array
         for(int i = 1; i < boardSize * boardSize; i++) {
             nums.add(i);
         }
-        nums.shuffle();
 
-        // Randomize hole location
-        holeX = MathUtils.random(0, boardSize - 1);
-        holeY = MathUtils.random(0, boardSize - 1);
+        // Set the hole at the bottom right so the sequence is 1,2,3...,15,hole (solved state) from which to start shuffling.
+        holeX = boardSize-1;
+        holeY = boardSize-1;
 
         for(int i = 0; i < boardSize; i++) {
             for(int j = 0; j < boardSize; j++) {
